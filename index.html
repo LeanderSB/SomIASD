@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Músicas da Igreja</title>
+    <style>
+        /* Configuração do fundo da página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #f0f0f0;
+            background: url('IASD.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        
+        /* Filtro escuro para melhorar a legibilidade */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente */
+            z-index: 1;
+        }
+
+        /* Estilo do conteúdo para aparecer acima do filtro */
+        .container {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(255, 255, 255, 0.1); /* Leve transparência para o fundo do container */
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #a0a0a0;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            background-color: #4CAF50; /* Verde para combinar com o tema IASD */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #388E3C;
+        }
+
+        .music-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-title {
+            font-size: 1.3em;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .video-container {
+            margin-top: 10px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 315px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .remove-button {
+            display: inline-block;
+            padding: 10px;
+            font-size: 0.9em;
+            background-color: #e74c3c;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .remove-button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cronograma de Músicas da Igreja</h1>
+
+    <!-- Formulário para adicionar música -->
+    <div class="input-group">
+        <label for="title">Título da Música:</label>
+        <input type="text" id="title" placeholder="Digite o título">
+    </div>
+    <div class="input-group">
+        <label for="link">Link da Música (YouTube):</label>
+        <input type="text" id="link" placeholder="Cole o link do YouTube">
+    </div>
+    <button onclick="addMusic()">Adicionar Música</button>
+
+    <!-- Área para os containers de música -->
+    <div id="music-list">
+        <!-- Containers de músicas serão adicionados aqui -->
+    </div>
+</div>
+
+<script>
+    function extractVideoId(url) {
+        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+    }
+
+    function addMusic() {
+        const title = document.getElementById('title').value;
+        const link = document.getElementById('link').value;
+
+        if (!title || !link) {
+            alert("Por favor, insira o título e o link da música.");
+            return;
+        }
+
+        const videoId = extractVideoId(link);
+
+        if (!videoId) {
+            alert("Link do YouTube inválido. Por favor, insira um link correto.");
+            return;
+        }
+        
+        const musicSection = document.createElement('div');
+        musicSection.classList.add('music-section');
+
+        const musicTitle = document.createElement('div');
+        musicTitle.classList.add('music-title');
+        musicTitle.innerText = title;
+
+        const videoContainer = document.createElement('div');
+        videoContainer.classList.add('video-container');
+        videoContainer.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+        const removeButton = document.createElement('button');
+        removeButton.innerText = 'Remover';
+        removeButton.classList.add('remove-button');
+        removeButton.onclick = () => musicSection.remove();
+
+        musicSection.appendChild(musicTitle);
+        musicSection.appendChild(videoContainer);
+        musicSection.appendChild(removeButton);
+
+        document.getElementById('music-list').appendChild(musicSection);
+
+        document.getElementById('title').value = '';
+        document.getElementById('link').value = '';
+    }
+</script>
+
+</body>
+</html>
